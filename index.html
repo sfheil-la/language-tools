@@ -35,33 +35,34 @@
     <h2>Word Pronunciation</h2>
     <p>Click below to hear the pronunciation of **Hello**.</p>
 
-    <button class="pronounce-button" onclick="getPronunciation('hello')">
-        🔊 Pronounce "Hello"
+    <button class="pronounce-button" onclick="getPronunciation('turd')">
+        🔊 Pronounce this word
     </button>
 
     <script>
-    function getPronunciation(word) {
-        // Free Dictionary API - no key needed, great for single words
-        fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`)
-            .then(response => response.json())
-            .then(data => {
-                // Find the first audio link available
-                const audioURL = data[0]?.phonetics?.find(p => p.audio)?.audio;
+function getPronunciation(word) {
+    // 1. Construct the direct MP3 URL based on a working example
+    const audioURL = `https://api.dictionaryapi.dev/media/pronunciations/en/${word}-us.mp3`;
 
-                if (audioURL) {
-                    // The API returns a protocol-relative URL (//ssl...), so we prepend 'https:'
-                    const fullAudioURL = `https:${audioURL}`;
-                    const audio = new Audio(fullAudioURL);
-                    audio.play();
-                } else {
-                    alert(`No pronunciation found for "${word}".`);
-                }
-            })
-            .catch(error => {
-                console.error('API Error:', error);
-                alert('An error occurred while fetching pronunciation.');
-            });
-    }
+    // 2. Create a new Audio object
+    const audio = new Audio(audioURL);
+
+    // 3. Optional: Add a listener to handle success or failure
+    audio.addEventListener('canplaythrough', () => {
+        // Audio loaded successfully, now play it
+        audio.play().catch(e => {
+            console.error("Audio play failed (user gesture required?):", e);
+        });
+    });
+
+    audio.addEventListener('error', (e) => {
+        console.error(`Error loading audio from fixed path for "${word}":`, e);
+        alert(`Could not find a direct MP3 for "${word}". (Check console for 404 error)`);
+    });
+
+    // Attempt to load the audio
+    audio.load(); 
+}
     </script>
 </body>
 </html>
