@@ -3,73 +3,136 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Pronunciation Widget</title>
+    <title>Irregular Verbs in English</title>
     <style>
-        /* Minimal styling for the Notion embed block */
+        /* General styling for the Notion embed block */
         body {
-            font-family: sans-serif;
-            padding: 15px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            padding: 20px;
             margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: transparent; /* Ensures no background shows up in Notion */
+            background: transparent;
+            color: #37352f;
         }
-        .pronounce-button {
-            background-color: #4CAF50; /* Green */
-            border: none;
-            color: white;
-            padding: 10px 20px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            margin-top: 10px;
+
+        /* Table styling */
+        .verb-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        .verb-table th, .verb-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        .verb-table th {
+            background-color: #f7f6f3;
+            font-weight: 600;
+        }
+        .verb-table tr:nth-child(even) {
+            background-color: #f7f6f3;
+        }
+
+        /* Speaker icon button styling */
+        .audio-btn {
             cursor: pointer;
-            border-radius: 8px;
+            margin-left: 5px;
+            color: #337a67; /* A subtle green/teal for the active icon */
+            font-size: 1em;
+            transition: opacity 0.1s;
+        }
+        .audio-btn:hover {
+            opacity: 0.7;
         }
     </style>
 </head>
 <body>
-    <h2>Word Pronunciation</h2>
-    <p>Click below to hear the pronunciation of **Hello**.</p>
 
-    <button class="pronounce-button" onclick="getPronunciation('ripple')">
-        🔊 Pronounce this word
-    </button>
+    <table class="verb-table">
+        <thead>
+            <tr>
+                <th>Base Form</th>
+                <th>Simple Past</th>
+                <th>Past Participle</th>
+                <th>Spanish Translation</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Be <span class="audio-btn" onclick="getPronunciation('be')">🔊</span></td>
+                <td>Was <span class="audio-btn" onclick="getPronunciation('was')">🔊</span> / Were <span class="audio-btn" onclick="getPronunciation('were')">🔊</span></td>
+                <td>Been <span class="audio-btn" onclick="getPronunciation('been')">🔊</span></td>
+                <td>Ser / Estar</td>
+            </tr>
+            <tr>
+                <td>Come <span class="audio-btn" onclick="getPronunciation('come')">🔊</span></td>
+                <td>Came <span class="audio-btn" onclick="getPronunciation('came')">🔊</span></td>
+                <td>Come <span class="audio-btn" onclick="getPronunciation('come')">🔊</span></td>
+                <td>Venir</td>
+            </tr>
+            <tr>
+                <td>Do <span class="audio-btn" onclick="getPronunciation('do')">🔊</span></td>
+                <td>Did <span class="audio-btn" onclick="getPronunciation('did')">🔊</span></td>
+                <td>Done <span class="audio-btn" onclick="getPronunciation('done')">🔊</span></td>
+                <td>Hacer</td>
+            </tr>
+            <tr>
+                <td>Eat <span class="audio-btn" onclick="getPronunciation('eat')">🔊</span></td>
+                <td>Ate <span class="audio-btn" onclick="getPronunciation('ate')">🔊</span></td>
+                <td>Eaten <span class="audio-btn" onclick="getPronunciation('eaten')">🔊</span></td>
+                <td>Comer</td>
+            </tr>
+            <tr>
+                <td>Go <span class="audio-btn" onclick="getPronunciation('go')">🔊</span></td>
+                <td>Went <span class="audio-btn" onclick="getPronunciation('went')">🔊</span></td>
+                <td>Gone <span class="audio-btn" onclick="getPronunciation('gone')">🔊</span></td>
+                <td>Ir</td>
+            </tr>
+            <tr>
+                <td>Take <span class="audio-btn" onclick="getPronunciation('take')">🔊</span></td>
+                <td>Took <span class="audio-btn" onclick="getPronunciation('took')">🔊</span></td>
+                <td>Taken <span class="audio-btn" onclick="getPronunciation('taken')">🔊</span></td>
+                <td>Tomar / Llevar</td>
+            </tr>
+        </tbody>
+    </table>
 
     <script>
-/**
- * Recommended robust function: Fetches the JSON to get the verified audio link.
- */
-function getPronunciation(word) {
-    // Fetch the full dictionary entry
-    fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('API lookup failed');
-            }
-            return response.json();
-        })
-        .then(data => {
-            // Find the verified audio URL from the phonetics array
-            const audioURL = data[0]?.phonetics?.find(p => p.audio)?.audio;
-            
-            if (audioURL) {
-                // Prepend 'https:' because the API link is often protocol-relative
-                const fullAudioURL = audioURL.startsWith('//') ? `https:${audioURL}` : audioURL;
-                const audio = new Audio(fullAudioURL);
-                audio.play().catch(e => console.error("Play failed:", e));
-            } else {
-                alert(`No pronunciation found for "${word}".`);
-            }
-        })
-        .catch(error => {
-            console.error('API Error:', error);
-            alert('Not available');
-        });
-}
+    /**
+     * Fetches the pronunciation audio link from the Free Dictionary API 
+     * and plays the sound.
+     * @param {string} word The word to pronounce.
+     */
+    function getPronunciation(word) {
+        // 1. Fetch the full dictionary entry for the word
+        fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch dictionary entry for "${word}"`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                // 2. Safely find the verified audio URL from the phonetics array
+                const audioURL = data[0]?.phonetics?.find(p => p.audio)?.audio;
+                
+                if (audioURL) {
+                    // 3. Prepend 'https:' because the API often returns a protocol-relative URL (//ssl...)
+                    const fullAudioURL = audioURL.startsWith('//') ? `https:${audioURL}` : audioURL;
+                    
+                    const audio = new Audio(fullAudioURL);
+                    // Attempt to play the audio and catch any browser-related errors (e.g., user interaction policy)
+                    audio.play().catch(e => {
+                        console.error("Audio play failed (check browser policy):", e);
+                    });
+                } else {
+                    console.log(`No verified pronunciation audio found for "${word}".`);
+                }
+            })
+            .catch(error => {
+                console.error('API Error:', error);
+            });
+    }
     </script>
 </body>
 </html>
