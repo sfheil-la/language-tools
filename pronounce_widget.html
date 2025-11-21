@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head><title>Pronunciation Widget</title></head>
+<body>
+    <button onclick="getPronunciation('selectedword')">
+        🔊 Pronounce 'selectedword'
+    </button>
+    
+    <script>
+    // This is the JavaScript that runs in the hosted iframe
+    function getPronunciation(word) {
+        // Use the Free Dictionary API URL to fetch the audio link
+        fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`)
+            .then(response => response.json())
+            .then(data => {
+                const audioURL = data[0].phonetics.find(p => p.audio)?.audio;
+                if (audioURL) {
+                    const audio = new Audio(`https:${audioURL}`);
+                    audio.play();
+                } else {
+                    console.log('No audio found.');
+                }
+            })
+            .catch(error => console.error('Error fetching data:', error));
+    }
+    </script>
+</body>
+</html>
