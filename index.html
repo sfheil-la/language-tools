@@ -98,41 +98,73 @@
     </table>
 
     <script>
+<script>
+    const GOOGLE_TTS_API_KEY = 'AIzaSyDbT3mJrcK4Kz6tN0tQVqPVAYoGJYqvwEQ';
     /**
-     * Fetches the pronunciation audio link from the Free Dictionary API 
-     * and plays the sound.
+     * Synthesizes and plays pronunciation audio using the Google Cloud Text-to-Speech API.
      * @param {string} word The word to pronounce.
      */
     function getPronunciation(word) {
-        // 1. Fetch the full dictionary entry for the word
-        fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`Failed to fetch dictionary entry for "${word}"`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                // 2. Safely find the verified audio URL from the phonetics array
-                const audioURL = data[0]?.phonetics?.find(p => p.audio)?.audio;
+        if (GOOGLE_TTS_API_KEY === 'YOUR_GOOGLE_CLOUD_API_KEY') {
+            console.error("Please replace the placeholder with your actual Google Cloud API Key.");
+            alert("Error: API Key is missing. Check the script code.");
+            return;
+        }
+
+        const endpoint = `https://texttospeech.googleapis.com/v1/text:synthesize?key=${GOOGLE_TTS_API_KEY}`;
+        
+        // Define the configuration for the TTS request
+        const requestBody = {
+            "input": {
+                "text": word
+            },
+            "voice": {
+                // Use a high-quality WaveNet voice for excellent sound (e.g., Wavenet-F)
+                "languageCode": "en-US",
+                "name": "en-US-Wavenet-F" 
+            },
+            "audioConfig": {
+                "audioEncoding": "MP3" // Request the output audio format
+            }
+        };
+
+        fetch(endpoint, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestBody)
+        })
+        .then(response => {
+            if (!response.ok) {
+                // Handle API-side errors (e.g., quota exceeded, bad request)
+                return response.json().then(err => { throw new Error(err.error.message || 'API request failed.'); });
+            }
+            return response.json();
+        })
+        .then(data => {
+            // The audio content is returned as a base64 encoded string
+            const base64Audio = data.audioContent;
+
+            if (base64Audio) {
+                // 1. Create a Data URI: "data:audio/mp3;base64,..."
+                const audioDataUri = `data:audio/mp3;base64,${base64Audio}`;
                 
-                if (audioURL) {
-                    // 3. Prepend 'https:' because the API often returns a protocol-relative URL (//ssl...)
-                    const fullAudioURL = audioURL.startsWith('//') ? `https:${audioURL}` : audioURL;
-                    
-                    const audio = new Audio(fullAudioURL);
-                    // Attempt to play the audio and catch any browser-related errors (e.g., user interaction policy)
-                    audio.play().catch(e => {
-                        console.error("Audio play failed (check browser policy):", e);
-                    });
-                } else {
-                    console.log(`No verified pronunciation audio found for "${word}".`);
-                }
-            })
-            .catch(error => {
-                console.error('API Error:', error);
-            });
+                // 2. Create and play the Audio object
+                const audio = new Audio(audioDataUri);
+                audio.play().catch(e => {
+                    console.error("Audio play failed (check browser policy):", e);
+                });
+            } else {
+                console.log(`Could not generate audio for "${word}".`);
+            }
+        })
+        .catch(error => {
+            console.error('Google TTS API Error:', error);
+            alert(`API Error: ${error.message}`);
+        });
     }
+</script>
     </script>
 </body>
 </html>
