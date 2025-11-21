@@ -40,28 +40,35 @@
     </button>
 
     <script>
+/**
+ * Recommended robust function: Fetches the JSON to get the verified audio link.
+ */
 function getPronunciation(word) {
-    // 1. Construct the direct MP3 URL based on a working example
-    const audioURL = `https://api.dictionaryapi.dev/media/pronunciations/en/${word}-us.mp3`;
-
-    // 2. Create a new Audio object
-    const audio = new Audio(audioURL);
-
-    // 3. Optional: Add a listener to handle success or failure
-    audio.addEventListener('canplaythrough', () => {
-        // Audio loaded successfully, now play it
-        audio.play().catch(e => {
-            console.error("Audio play failed (user gesture required?):", e);
+    // Fetch the full dictionary entry
+    fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('API lookup failed');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Find the verified audio URL from the phonetics array
+            const audioURL = data[0]?.phonetics?.find(p => p.audio)?.audio;
+            
+            if (audioURL) {
+                // Prepend 'https:' because the API link is often protocol-relative
+                const fullAudioURL = audioURL.startsWith('//') ? `https:${audioURL}` : audioURL;
+                const audio = new Audio(fullAudioURL);
+                audio.play().catch(e => console.error("Play failed:", e));
+            } else {
+                alert(`No pronunciation found for "${word}".`);
+            }
+        })
+        .catch(error => {
+            console.error('API Error:', error);
+            alert('Not available');
         });
-    });
-
-    audio.addEventListener('error', (e) => {
-        console.error(`Error loading audio from fixed path for "${word}":`, e);
-        alert(`Could not find a direct MP3 for "${word}". (Check console for 404 error)`);
-    });
-
-    // Attempt to load the audio
-    audio.load(); 
 }
     </script>
 </body>
