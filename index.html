@@ -1,27 +1,66 @@
 <!DOCTYPE html>
 <html>
-<head><title>Pronunciation Widget</title></head>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Pronunciation Widget</title>
+    <style>
+        /* Minimal styling for the Notion embed block */
+        body {
+            font-family: sans-serif;
+            padding: 15px;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: transparent; /* Ensures no background shows up in Notion */
+        }
+        .pronounce-button {
+            background-color: #4CAF50; /* Green */
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin-top: 10px;
+            cursor: pointer;
+            border-radius: 8px;
+        }
+    </style>
+</head>
 <body>
-    <button onclick="getPronunciation('selectedword')">
-        🔊 'selectedword'
+    <h2>Word Pronunciation</h2>
+    <p>Click below to hear the pronunciation of **Hello**.</p>
+
+    <button class="pronounce-button" onclick="getPronunciation('hello')">
+        🔊 Pronounce "Hello"
     </button>
-    
+
     <script>
-    // This is the JavaScript that runs in the hosted iframe
     function getPronunciation(word) {
-        // Use the Free Dictionary API URL to fetch the audio link
+        // Free Dictionary API - no key needed, great for single words
         fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`)
             .then(response => response.json())
             .then(data => {
-                const audioURL = data[0].phonetics.find(p => p.audio)?.audio;
+                // Find the first audio link available
+                const audioURL = data[0]?.phonetics?.find(p => p.audio)?.audio;
+
                 if (audioURL) {
-                    const audio = new Audio(`https:${audioURL}`);
+                    // The API returns a protocol-relative URL (//ssl...), so we prepend 'https:'
+                    const fullAudioURL = `https:${audioURL}`;
+                    const audio = new Audio(fullAudioURL);
                     audio.play();
                 } else {
-                    console.log('No audio found.');
+                    alert(`No pronunciation found for "${word}".`);
                 }
             })
-            .catch(error => console.error('Error fetching data:', error));
+            .catch(error => {
+                console.error('API Error:', error);
+                alert('An error occurred while fetching pronunciation.');
+            });
     }
     </script>
 </body>
