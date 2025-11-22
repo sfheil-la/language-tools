@@ -174,19 +174,26 @@
                     }
                     // Check if any inflected form (ins) matches the query word
                     // e.g., for 'go', an inflected form is 'went'
-                    if (entry.ins?.if?.toLowerCase().replace(/[*]/g, '') === normalizedQueryWord) {
+                    if (entry.ins) {
+                    const inflectedMatch = entry.ins.some(inflection => {
+                    // Normalize the inflection word before comparison
+                    const inflectedWord = inflection.if?.toLowerCase().replace(/[*]/g, '');
+                    return inflectedWord === normalizedQueryWord;
+                    });
+                    if (inflectedMatch) {
                         return true;
                     }
+                }
+                
+                // If neither the headword nor the inflection matches, return false
+                return false;
+                            }
                 });
 
                 if (matchingEntry) {
                     // If a match is found, extract the sound code from that specific entry
                     const prs = matchingEntry.hwi?.prs && matchingEntry.hwi.prs[0];
                     if (prs && prs.sound && prs.sound.audio) {
-                        soundCode = prs.sound.audio;
-                    }
-                    const inflected = matchingEntry.ins?.prs && matchingEntry.ins.prs[0];
-                    if (inflected && prs.sound && prs.sound.audio) {
                         soundCode = prs.sound.audio;
                     }
                 }
