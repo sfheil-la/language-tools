@@ -145,7 +145,7 @@
      * Fetches the pronunciation audio link from the Merriam-Webster API and plays the sound.
      * @param {string} word The word to pronounce.
      */
-    function getPronunciation(word) {
+    function getPronunciation(queryWord) {
         if (MW_API_KEY === 'YOUR_MERRIAM_WEBSTER_API_KEY') {
             console.error("Please replace the placeholder with your actual Merriam-Webster API Key.");
             alert("Error: API Key is missing.");
@@ -153,7 +153,7 @@
         }
         
         // 1. Construct the API request URL
-        const url = `${MW_ENDPOINT}${word}?key=${MW_API_KEY}`;
+        const url = `${MW_ENDPOINT}${queryWord}?key=${MW_API_KEY}`;
         
         fetch(url)
             .then(response => {
