@@ -110,12 +110,10 @@
 
     <script>
     const MW_API_KEY = '8e4b6edb-8abd-4570-9f3f-4ab60fe958f0';
-    const MW_ENDPOINT = 'https://www.dictionaryapi.com/api/v3/references/collegiate/json/';
+    const MW_ENDPOINT = 'https://www.dictionaryapi.com/api/v3/references/spanish/json/';
 
     /**
-     * Helper function to construct the full audio URL from the Merriam-Webster sound object (wav).
-     * @param {string} sound The "wav" code from the API response (e.g., "bix").
-     * @returns {string} The full URL to the MP3 file.
+     * Helper function to construct the full audio URL from the Merriam-Webster sound object  
      */
     function buildAudioUrl(sound) {
         if (!sound) return null;
