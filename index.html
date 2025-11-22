@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Merriam-Webster Pronunciation Widget</title>
+    <title>Verb Widget</title>
     <style>
         /* General styling for the Notion embed block */
         body {
@@ -46,7 +46,7 @@
 </head>
 <body>
 
-    <h2>Irregular Verb Pronunciation (Merriam-Webster)</h2>
+    <h2>Irregular Verbs to Practice</h2>
     <table class="verb-table">
         <thead>
             <tr>
@@ -121,7 +121,7 @@
         if (!sound) return null;
         
         // The first letter of the sound code determines the directory path.
-        // e.g., "bix" -> "b"
+        // e.g., "bpt" -> "b"
         let subdirectory = sound.charAt(0);
 
         // Special cases based on MW documentation
@@ -134,7 +134,7 @@
         }
 
         // Base URL for the audio files
-        const baseUrl = 'https://media.merriam-webster.com/soundc11/';
+        const baseUrl = 'https://media.merriam-webster.com/audio/prons/en/us/mp3/';
         
         // MW audio files are usually MP3s in the soundc11 directory
         return `${baseUrl}${subdirectory}/${sound}.mp3`;
@@ -169,7 +169,7 @@
                 if (firstEntry && firstEntry.hwi && firstEntry.hwi.prs && firstEntry.hwi.prs[0] && firstEntry.hwi.prs[0].sound) {
                     
                     // The "wav" property holds the key to the audio file path
-                    const soundCode = firstEntry.hwi.prs[0].sound.wav;
+                    const soundCode = firstEntry.hwi.prs[0].sound.audio;
                     
                     // 3. Use the helper function to build the full audio URL
                     const audioURL = buildAudioUrl(soundCode);
