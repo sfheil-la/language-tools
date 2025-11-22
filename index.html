@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Irregular Verbs in English</title>
+    <title>Merriam-Webster Pronunciation Widget</title>
     <style>
         /* General styling for the Notion embed block */
         body {
@@ -13,7 +13,6 @@
             background: transparent;
             color: #37352f;
         }
-
         /* Table styling */
         .verb-table {
             width: 100%;
@@ -26,18 +25,17 @@
             text-align: left;
         }
         .verb-table th {
-            background-color: #f7f6f3;
+            background-color: #F4E98C;
             font-weight: 600;
         }
         .verb-table tr:nth-child(even) {
             background-color: #f7f6f3;
         }
-
         /* Speaker icon button styling */
         .audio-btn {
             cursor: pointer;
             margin-left: 5px;
-            color: #337a67; /* A subtle green/teal for the active icon */
+            color: #337a67;
             font-size: 1em;
             transition: opacity 0.1s;
         }
@@ -48,6 +46,7 @@
 </head>
 <body>
 
+    <h2>Irregular Verb Pronunciation (Merriam-Webster)</h2>
     <table class="verb-table">
         <thead>
             <tr>
@@ -59,37 +58,49 @@
         </thead>
         <tbody>
             <tr>
-                <td>Be <span class="audio-btn" onclick="getPronunciation('be')">🔊</span></td>
-                <td>Was <span class="audio-btn" onclick="getPronunciation('was')">🔊</span> / Were <span class="audio-btn" onclick="getPronunciation('were')">🔊</span></td>
+                <td>To Be <span class="audio-btn" onclick="getPronunciation('to be')">🔊</span></td>
+                <td>Was <span class="audio-btn" onclick="getPronunciation('was')">🔊</span>/ Were <span class="audio-btn" onclick="getPronunciation('were')">🔊</span></td>
                 <td>Been <span class="audio-btn" onclick="getPronunciation('been')">🔊</span></td>
                 <td>Ser / Estar</td>
             </tr>
             <tr>
-                <td>Come <span class="audio-btn" onclick="getPronunciation('come')">🔊</span></td>
+                <td>To Begin <span class="audio-btn" onclick="getPronunciation('to begin')">🔊</span></td>
+                <td>Began <span class="audio-btn" onclick="getPronunciation('began')">🔊</span></td>
+                <td>Begun <span class="audio-btn" onclick="getPronunciation('begun')">🔊</span></td>
+                <td>Empezar</td>
+            </tr>
+            <tr>
+                <td>To Buy <span class="audio-btn" onclick="getPronunciation('to buy')">🔊</span></td>
+                <td>Bought <span class="audio-btn" onclick="getPronunciation('bought')">🔊</span></td>
+                <td>Bought <span class="audio-btn" onclick="getPronunciation('bought')">🔊</span></td>
+                <td>Comprar</td>
+            </tr>
+            <tr>
+                <td>To Come <span class="audio-btn" onclick="getPronunciation('to come')">🔊</span></td>
                 <td>Came <span class="audio-btn" onclick="getPronunciation('came')">🔊</span></td>
                 <td>Come <span class="audio-btn" onclick="getPronunciation('come')">🔊</span></td>
                 <td>Venir</td>
             </tr>
             <tr>
-                <td>Do <span class="audio-btn" onclick="getPronunciation('do')">🔊</span></td>
+                <td>To Do <span class="audio-btn" onclick="getPronunciation('to do')">🔊</span></td>
                 <td>Did <span class="audio-btn" onclick="getPronunciation('did')">🔊</span></td>
                 <td>Done <span class="audio-btn" onclick="getPronunciation('done')">🔊</span></td>
                 <td>Hacer</td>
             </tr>
             <tr>
-                <td>Eat <span class="audio-btn" onclick="getPronunciation('eat')">🔊</span></td>
+                <td>To Eat <span class="audio-btn" onclick="getPronunciation('to eat')">🔊</span></td>
                 <td>Ate <span class="audio-btn" onclick="getPronunciation('ate')">🔊</span></td>
                 <td>Eaten <span class="audio-btn" onclick="getPronunciation('eaten')">🔊</span></td>
                 <td>Comer</td>
             </tr>
             <tr>
-                <td>Go <span class="audio-btn" onclick="getPronunciation('go')">🔊</span></td>
+                <td>To Go <span class="audio-btn" onclick="getPronunciation('to go')">🔊</span></td>
                 <td>Went <span class="audio-btn" onclick="getPronunciation('went')">🔊</span></td>
                 <td>Gone <span class="audio-btn" onclick="getPronunciation('gone')">🔊</span></td>
                 <td>Ir</td>
             </tr>
             <tr>
-                <td>Take <span class="audio-btn" onclick="getPronunciation('take')">🔊</span></td>
+                <td>To Take <span class="audio-btn" onclick="getPronunciation('to take')">🔊</span></td>
                 <td>Took <span class="audio-btn" onclick="getPronunciation('took')">🔊</span></td>
                 <td>Taken <span class="audio-btn" onclick="getPronunciation('taken')">🔊</span></td>
                 <td>Tomar / Llevar</td>
@@ -98,73 +109,86 @@
     </table>
 
     <script>
-<script>
-    const GOOGLE_TTS_API_KEY = 'AIzaSyDbT3mJrcK4Kz6tN0tQVqPVAYoGJYqvwEQ';
+    const MW_API_KEY = '8e4b6edb-8abd-4570-9f3f-4ab60fe958f0';
+    const MW_ENDPOINT = 'https://www.dictionaryapi.com/api/v3/references/collegiate/json/';
+
     /**
-     * Synthesizes and plays pronunciation audio using the Google Cloud Text-to-Speech API.
+     * Helper function to construct the full audio URL from the Merriam-Webster sound object (wav).
+     * @param {string} sound The "wav" code from the API response (e.g., "bix").
+     * @returns {string} The full URL to the MP3 file.
+     */
+    function buildAudioUrl(sound) {
+        if (!sound) return null;
+        
+        // The first letter of the sound code determines the directory path.
+        // e.g., "bix" -> "b"
+        let subdirectory = sound.charAt(0);
+
+        // Special cases based on MW documentation
+        if (sound.startsWith("bix")) {
+            subdirectory = "bix";
+        } else if (sound.startsWith("gg")) {
+            subdirectory = "gg";
+        } else if (sound.match(/^\d/)) { // Starts with a digit
+            subdirectory = "number";
+        }
+
+        // Base URL for the audio files
+        const baseUrl = 'https://media.merriam-webster.com/soundc11/';
+        
+        // MW audio files are usually MP3s in the soundc11 directory
+        return `${baseUrl}${subdirectory}/${sound}.mp3`;
+    }
+
+    /**
+     * Fetches the pronunciation audio link from the Merriam-Webster API and plays the sound.
      * @param {string} word The word to pronounce.
      */
     function getPronunciation(word) {
-        if (GOOGLE_TTS_API_KEY === 'YOUR_GOOGLE_CLOUD_API_KEY') {
-            console.error("Please replace the placeholder with your actual Google Cloud API Key.");
-            alert("Error: API Key is missing. Check the script code.");
+        if (MW_API_KEY === 'YOUR_MERRIAM_WEBSTER_API_KEY') {
+            console.error("Please replace the placeholder with your actual Merriam-Webster API Key.");
+            alert("Error: API Key is missing.");
             return;
         }
-
-        const endpoint = `https://texttospeech.googleapis.com/v1/text:synthesize?key=${GOOGLE_TTS_API_KEY}`;
         
-        // Define the configuration for the TTS request
-        const requestBody = {
-            "input": {
-                "text": word
-            },
-            "voice": {
-                // Use a high-quality WaveNet voice for excellent sound (e.g., Wavenet-F)
-                "languageCode": "en-US",
-                "name": "en-US-Wavenet-F" 
-            },
-            "audioConfig": {
-                "audioEncoding": "MP3" // Request the output audio format
-            }
-        };
+        // 1. Construct the API request URL
+        const url = `${MW_ENDPOINT}${word}?key=${MW_API_KEY}`;
+        
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`MW API failed with status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                // 2. MW API returns an array. The first element is usually the primary definition.
+                const firstEntry = data[0];
 
-        fetch(endpoint, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(requestBody)
-        })
-        .then(response => {
-            if (!response.ok) {
-                // Handle API-side errors (e.g., quota exceeded, bad request)
-                return response.json().then(err => { throw new Error(err.error.message || 'API request failed.'); });
-            }
-            return response.json();
-        })
-        .then(data => {
-            // The audio content is returned as a base64 encoded string
-            const base64Audio = data.audioContent;
-
-            if (base64Audio) {
-                // 1. Create a Data URI: "data:audio/mp3;base64,..."
-                const audioDataUri = `data:audio/mp3;base64,${base64Audio}`;
-                
-                // 2. Create and play the Audio object
-                const audio = new Audio(audioDataUri);
-                audio.play().catch(e => {
-                    console.error("Audio play failed (check browser policy):", e);
-                });
-            } else {
-                console.log(`Could not generate audio for "${word}".`);
-            }
-        })
-        .catch(error => {
-            console.error('Google TTS API Error:', error);
-            alert(`API Error: ${error.message}`);
-        });
+                // Check if the entry is valid and has pronunciation data
+                if (firstEntry && firstEntry.hwi && firstEntry.hwi.prs && firstEntry.hwi.prs[0] && firstEntry.hwi.prs[0].sound) {
+                    
+                    // The "wav" property holds the key to the audio file path
+                    const soundCode = firstEntry.hwi.prs[0].sound.wav;
+                    
+                    // 3. Use the helper function to build the full audio URL
+                    const audioURL = buildAudioUrl(soundCode);
+                    
+                    if (audioURL) {
+                        const audio = new Audio(audioURL);
+                        audio.play().catch(e => {
+                            console.error("Audio play failed (check browser policy):", e);
+                        });
+                    }
+                } else {
+                    console.log(`No authoritative pronunciation found for "${word}" in MW API.`);
+                }
+            })
+            .catch(error => {
+                console.error('MW API Error:', error);
+                alert(`API Error: ${error.message}. Check the console for details.`);
+            });
     }
-</script>
     </script>
 </body>
 </html>
