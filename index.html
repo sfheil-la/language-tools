@@ -108,12 +108,14 @@
         </tbody>
     </table>
 
-    <script>
+<script>
     const MW_API_KEY = '8e4b6edb-8abd-4570-9f3f-4ab60fe958f0';
-    const MW_ENDPOINT = 'https://www.dictionaryapi.com/api/v3/references/spanish/json/';
+    const MW_ENDPOINT = 'https://www.dictionaryapi.com/api/v3/references/collegiate/json/';
 
     /**
-     * Helper function to construct the full audio URL from the Merriam-Webster sound object  
+     * Helper function to construct the full audio URL from the Merriam-Webster sound object (wav).
+     * @param {string} sound The "wav" code from the API response (e.g., "bix").
+     * @returns {string} The full URL to the MP3 file.
      */
     function buildAudioUrl(sound) {
         if (!sound) return null;
@@ -134,7 +136,7 @@
         // Base URL for the audio files
         const baseUrl = 'https://media.merriam-webster.com/audio/prons/en/us/mp3/';
         
-        // MW audio files are usually MP3s  
+        // MW audio files are usually MP3s in the soundc11 directory
         return `${baseUrl}${subdirectory}/${sound}.mp3`;
     }
 
@@ -162,20 +164,32 @@
             .then(data => {
                 let soundCode = null;
                 
-               const matchingEntry = data.find(entry => {
-                    // Check if the entry is a valid object with pronunciation data
-                    const hasAudio = entry.hwi?.prs?.[0]?.sound?.audio;
-                    
-                    // The Spanish API returns the entry word in 'hwi.hw'. Use .toLowerCase() for robust matching.
-                    const headwordMatches = entry.hwi?.hw?.toLowerCase() === queryWord.toLowerCase();
+                // Search for a perfect match (inflected form)
+                // This is crucial for matching 'came' or 'went' to its specific entry.
+                const matchingEntry = data.find(entry => {
+                    // Check if the entry itself is the queried word (e.g., looking up "came")
+                    if (entry.hwi?.hw === queryWord) {
+                        return true;
+                    }
 
-                    // We only want the first entry that matches the word and has sound.
-                    return headwordMatches && hasAudio;
+                    // Check if any inflected form (ins) matches the query word
+                    // e.g., for 'go', an inflected form is 'went'
+                    return entry.ins && entry.ins.some(inflection => 
+                        inflection.if === queryWord
+                    );
                 });
 
                 if (matchingEntry) {
-                    // 3. Extract the sound code from the matching entry's first pronunciation
-                    soundCode = matchingEntry.hwi.prs[0].sound.audio;
+                    // If a match is found, extract the sound code from that specific entry
+                    const prs = matchingEntry.hwi?.prs && matchingEntry.hwi.prs[0];
+                    if (prs && prs.sound && prs.sound.audio) {
+                        soundCode = prs.sound.audio;
+                    }
+                }
+                // Last resort: If no specific inflected-form match was found, use the first entry's audio
+                // This covers base forms and cases where tenses use the base form audio (e.g., 'come')
+                if (!soundCode && data[0]?.hwi?.prs) {
+                    soundCode = data[0].hwi.prs[0].sound?.audio;
                 }
                 
                 // Check if the entry is valid and has pronunciation data
