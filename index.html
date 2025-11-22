@@ -167,14 +167,9 @@
                 const matchingEntry = data.find(entry => {
                     // Check if the entry itself is the queried word (e.g., looking up "came")
                     if (entry.hwi?.hw === queryWord) {
+                        alert("matching headword");
                         return true;
                     }
-
-                    // Check if any inflected form (ins) matches the query word
-                    // e.g., for 'go', an inflected form is 'went'
-                    return entry.ins && entry.ins.some(inflection => 
-                        inflection.if === queryWord
-                    );
                 });
 
                 if (matchingEntry) {
