@@ -162,27 +162,20 @@
             .then(data => {
                 let soundCode = null;
                 
-                // Search for a perfect match (inflected form)
-                // This is crucial for matching 'came' or 'went' to its specific entry.
-                const matchingEntry = data.find(entry => {
-                    // Check if the entry itself is the queried word (e.g., looking up "came")
-                    if (entry.hwi?.hw === queryWord) {
-                        alert("matching headword");
-                        return true;
-                    }
+               const matchingEntry = data.find(entry => {
+                    // Check if the entry is a valid object with pronunciation data
+                    const hasAudio = entry.hwi?.prs?.[0]?.sound?.audio;
+                    
+                    // The Spanish API returns the entry word in 'hwi.hw'. Use .toLowerCase() for robust matching.
+                    const headwordMatches = entry.hwi?.hw?.toLowerCase() === queryWord.toLowerCase();
+
+                    // We only want the first entry that matches the word and has sound.
+                    return headwordMatches && hasAudio;
                 });
 
                 if (matchingEntry) {
-                    // If a match is found, extract the sound code from that specific entry
-                    const prs = matchingEntry.hwi?.prs && matchingEntry.hwi.prs[0];
-                    if (prs && prs.sound && prs.sound.audio) {
-                        soundCode = prs.sound.audio;
-                    }
-                }
-                // Last resort: If no specific inflected-form match was found, use the first entry's audio
-                // This covers base forms and cases where tenses use the base form audio (e.g., 'come')
-                if (!soundCode && data[0]?.hwi?.prs) {
-                    soundCode = data[0].hwi.prs[0].sound?.audio;
+                    // 3. Extract the sound code from the matching entry's first pronunciation
+                    soundCode = matchingEntry.hwi.prs[0].sound.audio;
                 }
                 
                 // Check if the entry is valid and has pronunciation data
