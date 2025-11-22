@@ -137,6 +137,7 @@
         const baseUrl = 'https://media.merriam-webster.com/audio/prons/en/us/mp3/';
         
         // MW audio files are usually MP3s in the soundc11 directory
+        alert("`${baseUrl}${subdirectory}/${sound}.mp3`");
         return `${baseUrl}${subdirectory}/${sound}.mp3`;
     }
 
@@ -181,7 +182,7 @@
                         });
                     }
                 } else {
-                    console.log(`No authoritative pronunciation found for "${word}" in MW API.`);
+                    console.log(`No pronunciation found for "${word}" in MW API.`);
                 }
             })
             .catch(error => {
