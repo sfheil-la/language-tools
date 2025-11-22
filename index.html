@@ -59,7 +59,7 @@
         <tbody>
             <tr>
                 <td>Be <span class="audio-btn" onclick="getPronunciation('be')">🔊</span></td>
-                <td>Was <span class="audio-btn" onclick="getPronunciation('was')">🔊</span>/ Were <span class="audio-btn" onclick="getPronunciation('were')">🔊</span></td>
+                <td>Was <span class="audio-btn" onclick="getPronunciation('was')">🔊</span> / Were <span class="audio-btn" onclick="getPronunciation('were')">🔊</span></td>
                 <td>Been <span class="audio-btn" onclick="getPronunciation('been')">🔊</span></td>
                 <td>Ser / Estar</td>
             </tr>
@@ -157,7 +157,7 @@
         fetch(url)
             .then(response => {
                 if (!response.ok) {
-                    throw new Error(`MW API failed with status: ${response.status}`);
+                    throw new Error(`Initial API fetch failed with status: ${response.status}`);
                 }
                 return response.json();
             })
@@ -171,7 +171,6 @@
                     if (entry.hwi?.hw === queryWord) {
                         return true;
                     }
-
                     // Check if any inflected form (ins) matches the query word
                     // e.g., for 'go', an inflected form is 'went'
                     return entry.ins && entry.ins.some(inflection => 
