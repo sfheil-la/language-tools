@@ -165,9 +165,12 @@
                 let soundCode = null;
                 const normalizedQueryWord = queryWord.toLowerCase();
                 const headwordMatch = data.find(entry => entry.hwi?.hw.toLowerCase().replace(/[*]/g, '') === normalizedQueryWord);
+                alert("assigned hw match");
                 const inflectMatch = data.find(entry => entry.ins?.if?.toLowerCase().replace(/[*]/g,'') === normalizedQueryWord);
+                alert("assigned inflect match");
                 if(inflectMatch) {
                     soundCode = inflectMatch?.ins?.prs?.sound.audio;
+                    alert("assigned inflection sound code");
                 } else if(headwordMatch) {
                     soundCode = headwordMatch[0].hwi?.hw?.prs[0]?.sound.audio;
                 } else if (!soundCode && data[0]?.hwi?.prs) {
