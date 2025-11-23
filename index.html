@@ -166,12 +166,12 @@
                 const normalizedQueryWord = queryWord.toLowerCase();
                 const headwordMatch = data.find(entry => entry.hwi?.hw.toLowerCase().replace(/[*]/g, '') === normalizedQueryWord);
                 const inflectMatch = data.find(entry => entry.ins?.if?.toLowerCase().replace(/[*]/g,'') === normalizedQueryWord);
-                if(headwordMatch) {
-                    soundCode = headwordMatch.hwi.hw.prs[0].sound.audio;
-                } else if(inflectMatch) {
-                    soundCode = inflectMatch.ins.prs[0].sound.audio;
+                if(inflectMatch) {
+                    soundCode = inflectMatch?.ins?.prs?.sound.audio;
+                } else if(headwordMatch) {
+                    soundCode = headwordMatch[0].hwi.hw.prs[0]?.sound.audio;
                 } else if (!soundCode && data[0]?.hwi?.prs) {
-                    soundCode = data[0].hwi.prs[0].sound?.audio;
+                    soundCode = data[0].hwi.prs[0]?.sound.audio;
                 }
 
 /*
