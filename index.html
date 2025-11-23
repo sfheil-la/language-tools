@@ -164,7 +164,19 @@
             .then(data => {
                 let soundCode = null;
                 const normalizedQueryWord = queryWord.toLowerCase();
-                
+                let headwordMatch = data.find(entry => entry.hwi?.hw.toLowerCase().replace(/[*]/g, '') === normalizedQueryWord);
+                let inflectMatch = data.find(entry => entry.ins?.if?.toLowerCase().replace(/[*]/g,'') === normalizedQueryWord);
+                if(headwordMatch) {
+                    soundCode = headwordMatch.hwi.hw.prs[0].sound.audio;
+                }
+                if(inflectMatch) {
+                    soundCode = inflectMatch.ins.prs[0].sound.audio;
+                }
+                if (!soundCode && data[0]?.hwi?.prs) {
+                    soundCode = data[0].hwi.prs[0].sound?.audio;
+                }
+
+/*
                 // Search for a perfect match (inflected form)
                 // This is crucial for matching 'came' or 'went' to its specific entry.
                 const matchingEntry = data.find(entry => {
@@ -206,7 +218,7 @@
                 if (!soundCode && data[0]?.hwi?.prs) {
                     soundCode = data[0].hwi.prs[0].sound?.audio;
                 }
-                
+*/     
                 // Check if the entry is valid and has pronunciation data
                 if (soundCode) {
                     // Use the helper function to build the full audio URL
