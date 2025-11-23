@@ -169,7 +169,7 @@
                 if(inflectMatch) {
                     soundCode = inflectMatch?.ins?.prs?.sound.audio;
                 } else if(headwordMatch) {
-                    soundCode = headwordMatch[0].hwi.hw.prs[0]?.sound.audio;
+                    soundCode = headwordMatch[0].hwi?.hw?.prs[0]?.sound.audio;
                 } else if (!soundCode && data[0]?.hwi?.prs) {
                     soundCode = data[0].hwi.prs[0]?.sound.audio;
                 }
