@@ -166,71 +166,23 @@
                 const normalizedQuery = queryWord.toLowerCase().replace(/[*]/g, '');
                 let soundCode = null;
 
-                // --- 1. SEARCH INFLECTIONS (`ins` array) ---
-                // We check if the query word matches an inflection form that has its own audio.
+                // Inflections
                 const matchedInflection = entry.ins?.find(inflection => {
-                    // Check if the inflection has a pronunciation block AND the text matches the query
                     const inflectedWord = inflection.if?.toLowerCase().replace(/[*]/g, '');
                     return inflectedWord === normalizedQuery && inflection.prs?.[0]?.sound?.audio;
                 });
 
                 if (matchedInflection) {
-                    // Success! Found a dedicated audio for the inflected form (e.g., "began" audio)
                     soundCode = matchedInflection.prs[0].sound.audio;
                 }
 
-                // --- 2. SEARCH HEADWORD (`hwi` block) ---
-                // If the inflection wasn't found, check if the query word matches the main headword.
+                // Headwords 
                 const headword = entry.hwi.hw?.toLowerCase().replace(/[*]/g, '');
                 if (!soundCode && headword === normalizedQuery) {
-                    // Success! Query matches the base headword (e.g., "begin" audio)
                     soundCode = entry.hwi.prs?.[0]?.sound?.audio;
                 }
                 alert(`testword: ${transWord} headword: ${headwordMatch} and inflect: ${inflectMatch} and soundcode: ${soundCode}`);
-
-/*
-                // Search for a perfect match (inflected form)
-                // This is crucial for matching 'came' or 'went' to its specific entry.
-                const matchingEntry = data.find(entry => {
-                    // Check if the entry itself is the queried word (e.g., looking up "came")
-                    if (entry.hwi?.hw.toLowerCase().replace(/[*]/g, '') === normalizedQueryWord) {
-                        return true;
-                    }
-                    // Check if any inflected form (ins) matches the query word
-                    // e.g., for 'go', an inflected form is 'went'
-                    if (entry.ins) {
-                        const inflectedMatch = entry.ins.some(inflection => {
-                        // Normalize the inflection word before comparison
-                        const inflectedWord = inflection.if?.toLowerCase().replace(/[*]/g, '');
-                        return inflectedWord === normalizedQueryWord;
-                    });
-                    if (inflectedMatch) {
-                        return true;
-                    }
-                }
-                
-                // If neither the headword nor the inflection matches, return false
-                return false;
-                }
-            });
-
-                if (matchingEntry) {
-                    // If a match is found, extract the sound code from that specific entry
-                    const prs = matchingEntry.hwi?.prs && matchingEntry.hwi.prs[0];
-                    if (prs && prs.sound && prs.sound.audio) {
-                        soundCode = prs.sound.audio;
-                    }
-                const infl = matchingEntry.ins?.prs && matchingEntry.ins.prs[0];
-                    if (infl && infl.sound && infl.sound.audio) {
-                        soundCode = infl.sound.audio;
-                    }
-                }
-                // Last resort: If no specific inflected-form match was found, use the first entry's audio
-                // This covers base forms and cases where tenses use the base form audio (e.g., 'come')
-                if (!soundCode && data[0]?.hwi?.prs) {
-                    soundCode = data[0].hwi.prs[0].sound?.audio;
-                }
-*/     
+     
                 // Check if the entry is valid and has pronunciation data
                 if (soundCode) {
                     // Use the helper function to build the full audio URL
@@ -247,7 +199,7 @@
             })
             .catch(error => {
                 console.error('MW API Error:', error);
-                alert(`Error searching JSON: ${error.message}. Check the console for details.`);
+                alert(`Still problems with JSON: ${error.message}. Check the console for details.`);
             });
     }
     </script>
