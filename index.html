@@ -162,24 +162,47 @@
                 return response.json();
             })
             .then(data => {
-                const entry = data[0];
                 const normalizedQuery = queryWord.toLowerCase().replace(/[*]/g, '');
                 let soundCode = null;
 
-                // Inflections
-                const matchedInflection = entry.ins?.find(inflection => {
-                    const inflectedWord = inflection.if?.toLowerCase().replace(/[*]/g, '');
-                    return inflectedWord === normalizedQuery && inflection.prs?.[0]?.sound?.audio;
+                // Search all entries
+                const entryWithAudio = data.find(entry => {
+                    if (!entry.meta) return false; // Skip metadata/empty objects
+
+                    // 1. Check Inflections (`ins` array): 
+                    // Does the query word match an inflected form with dedicated audio?
+                    if (entry.ins) {
+                        const matchedInflection = entry.ins.find(inflection => {
+                            const inflectedWord = inflection.if?.toLowerCase().replace(/[*]/g, '');
+                            // Check for both word match AND the required audio block
+                            return inflectedWord === normalizedQuery && inflection.prs?.[0]?.sound?.audio;
+                        });
+                        if (matchedInflection) {
+                            // If we find the audio inside an inflection, return this whole entry object.
+                            // We use a temporary property to store the audio path for easy retrieval later.
+                            entry.__foundAudioCode = matchedInflection.prs[0].sound.audio;
+                            return true;
+                        }
+                    }
+
+                    // 2. Check Headword (`hwi` block):
+                    // Does the query word match the main headword of this entry, AND does it have audio?
+                    const headword = entry.hwi?.hw?.toLowerCase().replace(/[*]/g, '');
+                    const hasHeadwordAudio = entry.hwi?.prs?.[0]?.sound?.audio;
+                    
+                    if (headword === normalizedQuery && hasHeadwordAudio) {
+                        // If we find the audio at the headword level, return this whole entry object.
+                        entry.__foundAudioCode = entry.hwi.prs[0].sound.audio;
+                        return true;
+                    }
+
+                    return false; // No match found in this entry
                 });
 
-                if (matchedInflection) {
-                    soundCode = matchedInflection.prs[0].sound.audio;
-                }
-
-                // Headwords 
-                const headword = entry.hwi.hw?.toLowerCase().replace(/[*]/g, '');
-                if (!soundCode && headword === normalizedQuery) {
-                    soundCode = entry.hwi.prs?.[0]?.sound?.audio;
+                if (entryWithAudio) {
+                    // Extract the audio code from the temporary property or the default location.
+                    // This handles both the 'go' entry (where we tag the audio) and a direct audio entry.
+                    soundCode = entryWithAudio.__foundAudioCode; 
                 }
                 alert(`soundcode: ${soundCode}`);
      
