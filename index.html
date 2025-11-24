@@ -50,7 +50,7 @@
     <table class="verb-table">
         <thead>
             <tr>
-                <th>Base Form</th>
+                <th>Base Form (Present)</th>
                 <th>Simple Past</th>
                 <th>Past Participle</th>
                 <th>Spanish Translation</th>
@@ -94,10 +94,76 @@
                 <td>Comer</td>
             </tr>
             <tr>
+                <td>Drink <span class="audio-btn" onclick="getPronunciation('drink')">🔊</span></td>
+                <td>Drank <span class="audio-btn" onclick="getPronunciation('drank')">🔊</span></td>
+                <td>Drunk <span class="audio-btn" onclick="getPronunciation('drunk')">🔊</span></td>
+                <td>Beber, tomar</td>
+            </tr>
+            <tr>
+                <td>Drive <span class="audio-btn" onclick="getPronunciation('drive')">🔊</span></td>
+                <td>Drove <span class="audio-btn" onclick="getPronunciation('drove')">🔊</span></td>
+                <td>Driven <span class="audio-btn" onclick="getPronunciation('driven')">🔊</span></td>
+                <td>Conducir, manejar</td>
+            </tr>
+            <tr>
+                <td>Eat <span class="audio-btn" onclick="getPronunciation('eat')">🔊</span></td>
+                <td>Ate <span class="audio-btn" onclick="getPronunciation('ate')">🔊</span></td>
+                <td>Eaten <span class="audio-btn" onclick="getPronunciation('eaten')">🔊</span></td>
+                <td>Comer</td>
+            </tr>
+            <tr>
+                <td>Fall <span class="audio-btn" onclick="getPronunciation('fall')">🔊</span></td>
+                <td>Fell <span class="audio-btn" onclick="getPronunciation('fell')">🔊</span></td>
+                <td>Fallen <span class="audio-btn" onclick="getPronunciation('fallen')">🔊</span></td>
+                <td>Caer</td>
+            </tr>
+            <tr>
+                <td>Feel <span class="audio-btn" onclick="getPronunciation('feel')">🔊</span></td>
+                <td>Felt <span class="audio-btn" onclick="getPronunciation('felt')">🔊</span></td>
+                <td>Felt <span class="audio-btn" onclick="getPronunciation('felt')">🔊</span></td>
+                <td>Sentir</td>
+            </tr>
+            <tr>
+                <td>Get <span class="audio-btn" onclick="getPronunciation('get')">🔊</span></td>
+                <td>Got <span class="audio-btn" onclick="getPronunciation('got')">🔊</span></td>
+                <td>Got/Gotten <span class="audio-btn" onclick="getPronunciation('gotten')">🔊</span></td>
+                <td>Obtener, conseguir</td>
+            </tr>
+            <tr>
+                <td>Give <span class="audio-btn" onclick="getPronunciation('give')">🔊</span></td>
+                <td>Gave <span class="audio-btn" onclick="getPronunciation('gave')">🔊</span></td>
+                <td>Given <span class="audio-btn" onclick="getPronunciation('given')">🔊</span></td>
+                <td>Dar</td>
+            </tr>
+            <tr>
                 <td>Go <span class="audio-btn" onclick="getPronunciation('go')">🔊</span></td>
                 <td>Went <span class="audio-btn" onclick="getPronunciation('went')">🔊</span></td>
                 <td>Gone <span class="audio-btn" onclick="getPronunciation('gone')">🔊</span></td>
                 <td>Ir</td>
+            </tr>
+            <tr>
+                <td>Have <span class="audio-btn" onclick="getPronunciation('have')">🔊</span></td>
+                <td>Had <span class="audio-btn" onclick="getPronunciation('had')">🔊</span></td>
+                <td>Had <span class="audio-btn" onclick="getPronunciation('had')">🔊</span></td>
+                <td>Tener</td>
+            </tr>
+            <tr>
+                <td>Keep <span class="audio-btn" onclick="getPronunciation('keep')">🔊</span></td>
+                <td>Kept <span class="audio-btn" onclick="getPronunciation('kept')">🔊</span></td>
+                <td>Kept <span class="audio-btn" onclick="getPronunciation('kept')">🔊</span></td>
+                <td>Guardar, mantener</td>
+            </tr>
+            <tr>
+                <td>Know <span class="audio-btn" onclick="getPronunciation('know')">🔊</span></td>
+                <td>Knew <span class="audio-btn" onclick="getPronunciation('knew')">🔊</span></td>
+                <td>Known <span class="audio-btn" onclick="getPronunciation('known')">🔊</span></td>
+                <td>Saber, conocer</td>
+            </tr>
+            <tr>
+                <td>Make <span class="audio-btn" onclick="getPronunciation('make')">🔊</span></td>
+                <td>Made <span class="audio-btn" onclick="getPronunciation('made')">🔊</span></td>
+                <td>Made <span class="audio-btn" onclick="getPronunciation('made')">🔊</span></td>
+                <td>Hacer, fabricar</td>
             </tr>
             <tr>
                 <td>Take <span class="audio-btn" onclick="getPronunciation('take')">🔊</span></td>
@@ -204,7 +270,6 @@
                     // This handles both the 'go' entry (where we tag the audio) and a direct audio entry.
                     soundCode = entryWithAudio.__foundAudioCode; 
                 }
-                alert(`soundcode: ${soundCode}`);
      
                 // Check if the entry is valid and has pronunciation data
                 if (soundCode) {
