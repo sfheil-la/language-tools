@@ -162,19 +162,29 @@
                 return response.json();
             })
             .then(data => {
+                const entry = data[0];
+                const normalizedQuery = queryWord.toLowerCase().replace(/[*]/g, '');
                 let soundCode = null;
-                let testWord = "TEST*WORDS";
-                let transWord = testWord.toLowerCase().replace(/[*]/g, '');
-                const normalizedQueryWord = queryWord.toLowerCase();
-                const headwordMatch = data.find(entry => entry.hwi?.hw === normalizedQueryWord);
-                const inflectMatch = data.find(inflection => 
-                        inflection.if?.toLowerCase().replace(/[*]/g, '') === normalizedQueryWord);
-                if(inflectMatch) {
-                    soundCode = "xxx"; // inflectMatch?.ins?.prs?.sound.audio;
-                } else if(headwordMatch) {
-                    soundCode = headwordMatch[0].hwi?.hw?.prs[0]?.sound.audio;
-                } else if (!soundCode && data[0]?.hwi?.prs) {
-                    soundCode = data[0].hwi.prs[0]?.sound.audio;
+
+                // --- 1. SEARCH INFLECTIONS (`ins` array) ---
+                // We check if the query word matches an inflection form that has its own audio.
+                const matchedInflection = entry.ins?.find(inflection => {
+                    // Check if the inflection has a pronunciation block AND the text matches the query
+                    const inflectedWord = inflection.if?.toLowerCase().replace(/[*]/g, '');
+                    return inflectedWord === normalizedQuery && inflection.prs?.[0]?.sound?.audio;
+                });
+
+                if (matchedInflection) {
+                    // Success! Found a dedicated audio for the inflected form (e.g., "began" audio)
+                    soundCode = matchedInflection.prs[0].sound.audio;
+                }
+
+                // --- 2. SEARCH HEADWORD (`hwi` block) ---
+                // If the inflection wasn't found, check if the query word matches the main headword.
+                const headword = entry.hwi.hw?.toLowerCase().replace(/[*]/g, '');
+                if (!soundCode && headword === normalizedQuery) {
+                    // Success! Query matches the base headword (e.g., "begin" audio)
+                    soundCode = entry.hwi.prs?.[0]?.sound?.audio;
                 }
                 alert(`testword: ${transWord} headword: ${headwordMatch} and inflect: ${inflectMatch} and soundcode: ${soundCode}`);
 
