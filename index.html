@@ -163,6 +163,8 @@
             })
             .then(data => {
                 let soundCode = null;
+                let testWord = "TEST*WORD";
+                let transWord = testWord.toLowerCase().replace(/[*]/g, '');
                 const normalizedQueryWord = queryWord.toLowerCase();
                 const headwordMatch = data.find(entry => entry.hwi?.hw.toLowerCase().replace(/[*]/g, '') === normalizedQueryWord);
                 const inflectMatch = data.find(inflection => 
@@ -174,7 +176,7 @@
                 } else if (!soundCode && data[0]?.hwi?.prs) {
                     soundCode = data[0].hwi.prs[0]?.sound.audio;
                 }
-                alert(`headword: ${headwordMatch} and inflect: ${inflectMatch} and soundcode: ${soundCode}`);
+                alert(`testword: ${transWord} headword: ${headwordMatch} and inflect: ${inflectMatch} and soundcode: ${soundCode}`);
 
 /*
                 // Search for a perfect match (inflected form)
@@ -230,7 +232,7 @@
                         });
                     }
                 } else {
-                    console.log(`No pronunciation found for "${word}" in MW API.`);
+                    console.log(`No pronunciation found for "${word}".`);
                 }
             })
             .catch(error => {
