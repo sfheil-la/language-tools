@@ -172,7 +172,7 @@
                 } else if(headwordMatch) {
                     soundCode = headwordMatch[0].hwi?.hw?.prs[0]?.sound.audio;
                 } else if (!soundCode && data[0]?.hwi?.prs) {
-                    soundCode = "zzz"; // data[0].hwi.prs[0]?.sound.audio;
+                    soundCode = data[0].hwi.prs[0]?.sound.audio;
                 }
                 alert(`headword: ${headwordMatch} and inflect: ${inflectMatch}`);
 
