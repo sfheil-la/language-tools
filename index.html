@@ -181,7 +181,7 @@
                 if (!soundCode && headword === normalizedQuery) {
                     soundCode = entry.hwi.prs?.[0]?.sound?.audio;
                 }
-                alert(`testword: ${transWord} headword: ${headwordMatch} and inflect: ${inflectMatch} and soundcode: ${soundCode}`);
+                alert(`soundcode: ${soundCode}`);
      
                 // Check if the entry is valid and has pronunciation data
                 if (soundCode) {
@@ -194,7 +194,7 @@
                         });
                     }
                 } else {
-                    console.log(`No pronunciation found for "${word}".`);
+                    console.log(`No pronunciation found for "${queryWord}".`);
                 }
             })
             .catch(error => {
