@@ -166,7 +166,7 @@
                 let testWord = "TEST*WORD";
                 let transWord = testWord.toLowerCase().replace(/[*]/g, '');
                 const normalizedQueryWord = queryWord.toLowerCase();
-                const headwordMatch = data.find(entry => entry.hwi?.hw.toLowerCase().replace(/[*]/g, '') === normalizedQueryWord);
+                const headwordMatch = data.find(entry => entry.hwi?.hw === normalizedQueryWord);
                 const inflectMatch = data.find(inflection => 
                         inflection.if?.toLowerCase().replace(/[*]/g, '') === normalizedQueryWord);
                 if(inflectMatch) {
