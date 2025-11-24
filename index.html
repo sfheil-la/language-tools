@@ -163,7 +163,7 @@
             })
             .then(data => {
                 let soundCode = null;
-                let testWord = "TEST*WORD";
+                let testWord = "TEST*WORDS";
                 let transWord = testWord.toLowerCase().replace(/[*]/g, '');
                 const normalizedQueryWord = queryWord.toLowerCase();
                 const headwordMatch = data.find(entry => entry.hwi?.hw === normalizedQueryWord);
